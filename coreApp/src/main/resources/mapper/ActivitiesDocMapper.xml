@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.ActivitiesDocMapper">
+  <resultMap id="BaseResultMap" type="com.mass.entity.ActivitiesDoc">
+    <id column="Id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
+    <result column="activities_id" jdbcType="BIGINT" property="activitiesId" />
+    <result column="proposal" jdbcType="VARCHAR" property="proposal" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.mass.entity.ActivitiesDoc">
+    <result column="value" jdbcType="LONGVARCHAR" property="value" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, create_time, last_modify_time, activities_id, proposal, type, status
+  </sql>
+  <sql id="Blob_Column_List">
+    value
+  </sql>
+  <select id="selectById" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mass_db.activities_doc
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from mass_db.activities_doc
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.mass.entity.ActivitiesDoc">
+    insert into mass_db.activities_doc ( activities_id,
+      proposal, type, status, 
+      value)
+    values ( #{activitiesId,jdbcType=BIGINT},
+      #{proposal,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{value,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.mass.entity.ActivitiesDoc">
+    update mass_db.activities_doc
+    set
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      activities_id = #{activitiesId,jdbcType=BIGINT},
+      proposal = #{proposal,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      value = #{value,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mass.entity.ActivitiesDoc">
+    update mass_db.activities_doc
+    set
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      activities_id = #{activitiesId,jdbcType=BIGINT},
+      proposal = #{proposal,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+       value = #{value,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectByActivitiesId" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mass_db.activities_doc
+    where activities_id = #{activitiesId,jdbcType=BIGINT}
+  </select>
+
+
+</mapper>

@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mass.dao.SysUserMapper">
+    <resultMap id="BaseResultMap" type="com.mass.dto.SysUser">
+        <constructor>
+            <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+            <arg column="organization_id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+            <arg column="username" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="sex" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+            <arg column="grade" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="phone" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="salt" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="role_ids_str" jdbcType="VARCHAR" javaType="java.lang.String"/>
+            <arg column="locked" jdbcType="BIT" javaType="java.lang.Boolean"/>
+        </constructor>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    id, organization_id, username,name, sex, create_time, grade, email, phone, salt,
+    role_ids_str, locked
+  </sql>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mass.dto.SysUserExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from sys_user
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_user
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.mass.dto.SysUserExample">
+        delete from sys_user
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.mass.dto.SysUser">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_user (organization_id, username,name, password,
+        sex, create_time, grade,
+        email, phone, salt,
+        role_ids_str, locked)
+        values (#{organizationId,jdbcType=BIGINT}, #{username,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+        #{password,jdbcType=VARCHAR},
+        #{sex,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{grade,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},
+        #{roleIdsStr,jdbcType=VARCHAR}, #{locked,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.mass.dto.SysUser">
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="salt != null">
+                salt,
+            </if>
+            <if test="roleIdsStr != null">
+                role_ids_str,
+            </if>
+            <if test="locked != null">
+                locked,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="salt != null">
+                #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="roleIdsStr != null">
+                #{roleIdsStr,jdbcType=VARCHAR},
+            </if>
+            <if test="locked != null">
+                #{locked,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.mass.dto.SysUserExample" resultType="java.lang.Integer">
+        select count(*) from sys_user
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update sys_user
+        <set>
+            <if test="record.id != null">
+                id = #{record.id,jdbcType=BIGINT},
+            </if>
+            <if test="record.organizationId != null">
+                organization_id = #{record.organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="record.username != null">
+                username = #{record.username,jdbcType=VARCHAR},
+            </if>
+            <if test="record.name != null">
+                username = #{record.name,jdbcType=VARCHAR},
+            </if>
+            <if test="record.password != null">
+                password = #{record.password,jdbcType=VARCHAR},
+            </if>
+            <if test="record.sex != null">
+                sex = #{record.sex,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.grade != null">
+                grade = #{record.grade,jdbcType=VARCHAR},
+            </if>
+            <if test="record.email != null">
+                email = #{record.email,jdbcType=VARCHAR},
+            </if>
+            <if test="record.phone != null">
+                phone = #{record.phone,jdbcType=VARCHAR},
+            </if>
+            <if test="record.salt != null">
+                salt = #{record.salt,jdbcType=VARCHAR},
+            </if>
+            <if test="record.roleIdsStr != null">
+                role_ids_str = #{record.roleIdsStr,jdbcType=VARCHAR},
+            </if>
+            <if test="record.locked != null">
+                locked = #{record.locked,jdbcType=BIT},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update sys_user
+        set id = #{record.id,jdbcType=BIGINT},
+        organization_id = #{record.organizationId,jdbcType=BIGINT},
+        username = #{record.username,jdbcType=VARCHAR},
+        name = #{record.name,jdbcType=VARCHAR},
+        password = #{record.password,jdbcType=VARCHAR},
+        sex = #{record.sex,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        grade = #{record.grade,jdbcType=VARCHAR},
+        email = #{record.email,jdbcType=VARCHAR},
+        phone = #{record.phone,jdbcType=VARCHAR},
+        salt = #{record.salt,jdbcType=VARCHAR},
+        role_ids_str = #{record.roleIdsStr,jdbcType=VARCHAR},
+        locked = #{record.locked,jdbcType=BIT}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.mass.dto.SysUser">
+        update sys_user
+        <set>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="salt != null">
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
+            <if test="roleIdsStr != null">
+                role_ids_str = #{roleIdsStr,jdbcType=VARCHAR},
+            </if>
+            <if test="locked != null">
+                locked = #{locked,jdbcType=BIT},
+            </if>
+        </set>
+        where username = #{username,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKeySelective2" parameterType="com.mass.dto.login.UpdateUserDto">
+        update sys_user
+        <set>
+
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+
+            <if test="sex != null">
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR}
+            </if>
+
+        </set>
+        where username = #{username}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.mass.dto.SysUser">
+    update sys_user
+    set organization_id = #{organizationId,jdbcType=BIGINT},
+      username = #{username,jdbcType=VARCHAR},
+       name = #{name,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      grade = #{grade,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      salt = #{salt,jdbcType=VARCHAR},
+      role_ids_str = #{roleIdsStr,jdbcType=VARCHAR},
+      locked = #{locked,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="getCountByUserAndPass" resultType="Integer">
+    SELECT COUNT(1)  FROM sys_user  WHERE   username=#{username} AND  password=#{password}
+
+  </select>
+    <select id="getById" resultType="com.mass.dto.SysUser">
+    SELECT
+    *  FROM
+    sys_user  WHERE   username=#{username};
+  </select>
+    <update id="updateUser">
+    UPDATE  sys_user SET  password=#{password} WHERE  username= #{username}
+
+  </update>
+    <select id="getUserByName" resultType="com.mass.dto.SysUser">
+           SELECT
+
+<include refid="Base_Column_List"/>
+            FROM  sys_user  WHERE username=#{username}
+    </select>
+    <insert id="insertUserList">
+        insert into sys_user (organization_id, username,name, password,
+        sex, create_time, grade,
+        email, phone, salt,
+        role_ids_str, locked)VALUES
+        <foreach collection="list" item="u" separator=",">
+            (
+            #{u.organizationId,jdbcType=BIGINT}, #{u.username,jdbcType=VARCHAR}, #{u.name,jdbcType=VARCHAR},
+            #{u.password,jdbcType=VARCHAR},
+            #{u.sex,jdbcType=VARCHAR}, #{u.createTime,jdbcType=TIMESTAMP}, #{u.grade,jdbcType=VARCHAR},
+            #{u.email,jdbcType=VARCHAR}, #{u.phone,jdbcType=VARCHAR}, #{u.salt,jdbcType=VARCHAR},
+            #{u.roleIdsStr,jdbcType=VARCHAR}, #{u.locked,jdbcType=BIT}
+            )
+        </foreach>
+    </insert>
+    <select id="getuserList" resultType="com.mass.dto.SysUser">
+        SELECT * FROM sys_user
+        <where>
+            <if test="org!=null and org!=''">
+                username IN (SELECT username FROM sys_user_org WHERE org_name=#{org})
+            </if>
+
+        </where>
+
+    </select>
+    <select id="getAllByOrg" resultType="com.mass.dto.SysUser">
+      SELECT
+        <include refid="Base_Column_List"/>
+      FROM sys_user WHERE  username IN (SELECT username FROM sys_user_org WHERE  org_id=#{org})  ORDER BY create_time limit #{offset},#{limit};
+    </select>
+    <select id="getAllByOrgCount" resultType="Integer">
+    SELECT COUNT(1) FROM sys_user WHERE  username IN (SELECT username FROM sys_user_org WHERE  org_id=#{org} )
+  </select>
+    <select id="selectByUsername" resultType="com.mass.dto.SysUser">
+            SELECT
+        <include refid="Base_Column_List"/>
+             FROM   sys_user   WHERE   username= #{username}
+  </select>
+    <select id="getbyid" resultType="com.mass.dto.UserRole">
+           SELECT  <include refid="Base_Column_List"/>
+        FROM user_role  WHERE   id = 1
+  </select>
+    <select id="getAlls" resultType="com.mass.dto.SysUser">
+        SELECT <include refid="Base_Column_List"/>
+        FROM sys_user where 1=1
+        <if test="name  != null">
+            and name like concat(#{name},'%')
+        </if>
+        <if test="username  != null">
+            and username like concat(#{username},'%')
+        </if>
+        <if test="classes  != null">
+            and grade like concat(#{classes},'%')
+        </if>
+        <if test="status  != null">
+        and locked =#{status}
+        </if> ORDER BY username
+    </select>
+
+
+    <select id="countAlls" resultType="java.lang.Long">
+        SELECT count(*) FROM sys_user where 1=1
+        <if test="name  != null">
+            and name like concat(#{name},'%')
+        </if>
+        <if test="username  != null">
+            and username like concat(#{username},'%')
+        </if>
+        <if test="classes  != null">
+            and grade like concat(#{classes},'%')
+        </if>
+        <if test="status  != null">
+            and locked =#{status}
+        </if>
+    </select>
+    <update id="setNewPass" >
+      UPDATE  sys_user SET password=#{newPassword} WHERE  username=#{username}
+    </update>
+    <select id="getuserListInRole" resultType="com.mass.dto.SysUser">
+          SELECT  id,username,name ,grade FROM  sys_user
+          <where>
+              <if test="username!=null and username !=''">
+                   username=#{username}
+              </if>
+          </where>
+                 limit #{offset},#{limit}
+    </select>
+    <select id="userListInRoleCount" resultType="java.lang.Integer">
+        SELECT  COUNT(1) FROM  sys_user
+        <where>
+            <if test="username!=null and username !=''">
+                username=#{username}
+            </if>
+        </where>
+    </select>
+    <select id="getUserByUserName" resultType="com.mass.dto.vo.UserDetailVo">
+              SELECT * FROM  sys_user WHERE    username=#{username}
+    </select>
+    <select id="getCountByUsernameAndName" resultType="int">
+            SELECT COUNT(1) FROM  sys_user WHERE  username=#{username} AND  name=#{name}
+    </select>
+    <select id="isExist" resultType="int">
+           SELECT COUNT(1) FROM sys_user WHERE  username IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <update id="setUserImg" >
+    UPDATE  sys_user SET  head_img=#{url} WHERE  username=#{username}
+    </update>
+
+
+</mapper>

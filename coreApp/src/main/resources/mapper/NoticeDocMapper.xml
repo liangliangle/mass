@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.NoticeDocMapper">
+  <resultMap id="BaseResultMap" type="com.mass.entity.NoticeDoc">
+    <id column="Id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
+    <result column="notice_id" jdbcType="BIGINT" property="noticeId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.mass.entity.NoticeDoc">
+    <result column="thetext" jdbcType="LONGVARCHAR" property="thetext" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, create_time, last_modify_time, notice_id, status
+  </sql>
+  <sql id="Blob_Column_List">
+    thetext
+  </sql>
+  <select id="selectByNoticeId" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mass_db.notice_doc
+    where  notice_id= #{noticeId,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from mass_db.notice_doc
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from mass_db.notice_doc
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.mass.entity.NoticeDoc">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into mass_db.notice_doc (create_time, last_modify_time, notice_id, 
+      status, thetext)
+    values (#{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, #{noticeId,jdbcType=BIGINT}, 
+      #{status,jdbcType=INTEGER}, #{thetext,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mass.entity.NoticeDoc">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into mass_db.notice_doc
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time,
+      </if>
+      <if test="noticeId != null">
+        notice_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="thetext != null">
+        thetext,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null">
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="noticeId != null">
+        #{noticeId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="thetext != null">
+        #{thetext,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mass.entity.NoticeDoc">
+    update mass_db.notice_doc
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null">
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="noticeId != null">
+        notice_id = #{noticeId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="thetext != null">
+        thetext = #{thetext,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.mass.entity.NoticeDoc">
+    update mass_db.notice_doc
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      notice_id = #{noticeId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      thetext = #{thetext,jdbcType=LONGVARCHAR}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mass.entity.NoticeDoc">
+    update mass_db.notice_doc
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      notice_id = #{noticeId,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByNoticeId" parameterType="com.mass.entity.NoticeDoc">
+    update mass_db.notice_doc
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+    last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+    notice_id = #{noticeId,jdbcType=BIGINT},
+    status = #{status,jdbcType=INTEGER}
+    where notice_id = #{noticeId,jdbcType=BIGINT}
+  </update>
+</mapper>

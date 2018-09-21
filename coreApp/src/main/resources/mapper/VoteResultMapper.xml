@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.VoteResultMapper">
+    <resultMap id="BaseResultMap" type="com.mass.entity.VoteResult">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+        <result column="vote_id" jdbcType="BIGINT" property="voteId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="sno" jdbcType="VARCHAR" property="sno"/>
+        <result column="option_id" jdbcType="BIGINT" property="optionId"/>
+        <result column="option_value" jdbcType="VARCHAR" property="option"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <resultMap id="DtoResultMap" type="com.mass.dto.result.VoteResultDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="vote_id" jdbcType="BIGINT" property="voteId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="sno" jdbcType="VARCHAR" property="sno"/>
+        <result column="option_id" jdbcType="BIGINT" property="optionId"/>
+        <result column="option_value" jdbcType="VARCHAR" property="option"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, create_time, last_modify_time, vote_id, user_name, sno, option_id, option_value, status
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from vote_result
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from vote_result
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.mass.entity.VoteResult" keyProperty="id" useGeneratedKeys="true">
+
+    insert ignore into vote_result (create_time, last_modify_time, vote_id,
+      user_name, sno, option_id, 
+      option_value, status)
+    values (#{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, #{voteId,jdbcType=BIGINT}, 
+      #{userName,jdbcType=VARCHAR}, #{sno,jdbcType=VARCHAR}, #{optionId,jdbcType=BIGINT}, 
+      #{option,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.mass.entity.VoteResult">
+    update vote_result
+    set
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      vote_id = #{voteId,jdbcType=BIGINT},
+      user_name = #{userName,jdbcType=VARCHAR},
+      sno = #{sno,jdbcType=VARCHAR},
+      option_id = #{optionId,jdbcType=BIGINT},
+      option_value = #{option,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+    <select id="selectByVoteId" resultMap="DtoResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from vote_result
+        where vote_id = #{voteId,jdbcType=BIGINT}  order by create_time desc
+    </select>
+
+    <select id="groupByVoteId" resultType="com.mass.dto.DataResult">
+     select option_value as value ,count(option_value) as count  from vote_result
+      where vote_id=#{voteId} group by option_value
+</select>
+
+</mapper>

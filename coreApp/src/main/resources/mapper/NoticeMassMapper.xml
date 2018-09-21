@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.NoticeMassMapper">
+  <resultMap id="BaseResultMap" type="com.mass.entity.NoticeMass">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime" />
+    <result column="notice_id" jdbcType="BIGINT" property="noticeId" />
+    <result column="mass_id" jdbcType="BIGINT" property="massId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, last_modify_time, notice_id, mass_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from notice_mass
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Long">
+   update notice_mass
+    set status=0
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <delete id="deleteByNoticeId" >
+    DELETE  from notice_mass
+    where notice_id = #{noticeId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.mass.entity.NoticeMass" useGeneratedKeys="true" keyProperty="id">
+    insert into notice_mass (create_time, last_modify_time, notice_id, 
+      mass_id)
+    values (#{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, #{noticeId,jdbcType=BIGINT}, 
+      #{massId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mass.entity.NoticeMass">
+    update notice_mass
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      notice_id = #{noticeId,jdbcType=BIGINT},
+      mass_id = #{massId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.NoticeMapper">
+  <resultMap id="BaseResultMap" type="com.mass.entity.Notice">
+    <id column="Id" jdbcType="BIGINT" property="id"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="sno" jdbcType="VARCHAR" property="sno"/>
+    <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+    <result column="ranges" jdbcType="VARCHAR" property="range"/>
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+    <result column="is_cove_son" jdbcType="INTEGER" property="isCoveSon"/>
+    <result column="description" jdbcType="VARCHAR" property="description"/>
+    <result column="activities_id" jdbcType="BIGINT" property="activitiesId"/>
+    <result column="status" property="status"/>
+  </resultMap>
+  <resultMap id="DtoResultMap" type="com.mass.dto.result.NoticeDto">
+    <id column="Id" jdbcType="BIGINT" property="id"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="ranges" jdbcType="VARCHAR" property="range"/>
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+    <result column="sno" jdbcType="VARCHAR" property="sno"/>
+    <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+    <result column="is_cove_son" jdbcType="INTEGER" property="isCoveSon"/>
+    <result column="description" jdbcType="VARCHAR" property="description"/>
+    <result column="activities_id" jdbcType="BIGINT" property="activitiesId"/>
+    <result column="status" property="status"/>
+    <result column="redundancy" property="redundancy"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, create_time, last_modify_time, name, sno,user_name,ranges, start_time, end_time, is_cove_son,
+    description, activities_id, status
+  </sql>
+  <!--selectByQuery -->
+  <select id="selectByQuery" resultMap="DtoResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mass_db.notice
+    where 1=1
+    <if test="name != null">
+      and name like concat(#{name},'%')
+    </if>
+    <if test="startTime != null">
+      and start_time &gt;= #{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null">
+      and end_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="status != null">
+      and status = #{status}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mass_db.notice
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectBySno" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mass_db.notice
+    where sno=#{sno}
+    <if test="status != null">
+      and status=#{status}
+    </if> order by create_time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from mass_db.notice
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.mass.entity.Notice" useGeneratedKeys="true" keyProperty="id">
+    insert into mass_db.notice (name,sno,user_name, ranges, start_time, end_time,is_cove_son, description, activities_id,status)
+    values ( #{name},#{sno},#{userName},
+      #{range}, #{startTime}, #{endTime},
+      #{isCoveSon}, #{description}, #{activitiesId}, #{status})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.mass.entity.Notice">
+    update mass_db.notice
+    set
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      name = #{name,jdbcType=VARCHAR},
+      sno=#{sno},
+      user_name=#{userName},
+      ranges = #{range,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      is_cove_son = #{isCoveSon,jdbcType=INTEGER},
+      description = #{description,jdbcType=VARCHAR},
+      activities_id = #{activitiesId,jdbcType=BIGINT},
+      status = #{status}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="selectMyNotice" resultMap="DtoResultMap">
+    select notice.* ,notice_users.read_status as redundancy from notice LEFT join notice_users
+     on notice.Id=notice_users.notice_id where
+      notice_users.sno=#{sno}
+       <if test="status != null">
+         and notice_users.read_status=#{status} and notice.end_time>now()
+       </if>
+       order by notice.create_time desc
+  </select>
+
+  <!--selectByQuery -->
+  <select id="selectByStart" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mass_db.notice
+    where start_time &lt;= #{startTime}
+    and status = 1
+  </select>
+  <update id="closeNotice">
+    update mass_db.notice
+    set status =3 where end_time &lt; now() and status=2;
+  </update>
+</mapper>

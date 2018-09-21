@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.ActivitiesMapper">
+  <resultMap id="BaseResultMap" type="com.fzd.cloud.entity.Activities">
+    <id column="Id" jdbcType="BIGINT" property="id"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="place" jdbcType="VARCHAR" property="place"/>
+    <result column="semester_name" jdbcType="VARCHAR" property="semesterName"/>
+    <result column="sponsor_mass" jdbcType="VARCHAR" property="sponsorMass"/>
+    <result column="hold_time" jdbcType="TIMESTAMP" property="holdTime"/>
+    <result column="type" jdbcType="VARCHAR" property="type"/>
+    <result column="review" jdbcType="INTEGER" property="review"/>
+    <result column="description" jdbcType="VARCHAR" property="description"/>
+    <result column="join_people" jdbcType="INTEGER" property="joinPeople"/>
+    <result column="audience" jdbcType="INTEGER" property="audience"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
+  </resultMap>
+  <resultMap id="DtoResultMap" type="com.mass.dto.result.ActivitiesDto">
+    <id column="Id" jdbcType="BIGINT" property="id"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="place" jdbcType="VARCHAR" property="place"/>
+    <result column="semester_name" jdbcType="VARCHAR" property="semesterName"/>
+    <result column="sponsor_mass" jdbcType="VARCHAR" property="sponsorMass"/>
+    <result column="hold_time" jdbcType="TIMESTAMP" property="holdTime"/>
+    <result column="type" jdbcType="VARCHAR" property="type"/>
+    <result column="review" jdbcType="INTEGER" property="review"/>
+    <result column="description" jdbcType="VARCHAR" property="description"/>
+    <result column="join_people" jdbcType="INTEGER" property="joinPeople"/>
+    <result column="audience" jdbcType="INTEGER" property="audience"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, create_time, last_modify_time, name, place, semester_name, sponsor_mass, hold_time, 
+    type, review, description, join_people, audience, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mass_db.activities
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from mass_db.activities
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.fzd.cloud.entity.Activities" keyProperty="id" useGeneratedKeys="true">
+    insert into mass_db.activities ( name,
+      place, semester_name, sponsor_mass, 
+      hold_time, type, review, 
+      description, join_people, audience, 
+      status)
+    values ( #{name,jdbcType=VARCHAR},
+      #{place,jdbcType=VARCHAR}, #{semesterName,jdbcType=VARCHAR}, #{sponsorMass,jdbcType=VARCHAR}, 
+      #{holdTime,jdbcType=TIMESTAMP}, #{type,jdbcType=VARCHAR}, #{review,jdbcType=INTEGER}, 
+      #{description,jdbcType=VARCHAR}, #{joinPeople,jdbcType=INTEGER}, #{audience,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.fzd.cloud.entity.Activities">
+    update mass_db.activities
+    set
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      name = #{name,jdbcType=VARCHAR},
+      place = #{place,jdbcType=VARCHAR},
+      semester_name = #{semesterName,jdbcType=VARCHAR},
+      sponsor_mass = #{sponsorMass,jdbcType=VARCHAR},
+      hold_time = #{holdTime,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=VARCHAR},
+      review = #{review,jdbcType=INTEGER},
+      description = #{description,jdbcType=VARCHAR},
+      join_people = #{joinPeople,jdbcType=INTEGER},
+      audience = #{audience,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--    List<Activities> selectByQuery(@Param("start")int start, @Param("row")int row, @Param("query")ActitQuery query);-->
+  <select id="selectByQuery" resultMap="DtoResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mass_db.activities
+    where 1=1
+    <if test="query.name != null">
+      and name like concat(#{query.name},'%')
+    </if>
+    <if test="query.sponsorMass != null">
+      and sponsor_mass=#{query.sponsorMass}
+    </if>
+
+    <if test="query.type != null">
+      and type =#{query.type}
+    </if>
+    <if test="query.holdStartTime != null">
+      <if test="query.holdEndTime != null">
+        and hold_time BETWEEN #{query.holdStartTime} and #{query.holdEndTime}
+      </if>
+      <if test="query.holdEndTime == null">
+        and hold_time BETWEEN #{query.holdStartTime} and now()
+      </if>
+    </if>
+    <if test="query.status != null">
+      and status =#{query.status}
+    </if> order by create_time desc
+  </select>
+
+  <select id="lately" resultMap="DtoResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from mass_db.activities where status=3 and hold_time  &gt;=  now() and hold_time  &lt;=  #{date} order by create_time desc
+  </select>
+<update id="checkActivity" >
+   update mass_db.activities
+    set status=4 where hold_time &lt;= ${date} where status=3
+</update>
+</mapper>

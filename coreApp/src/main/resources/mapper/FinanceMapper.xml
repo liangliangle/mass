@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.FinanceMapper">
+  <resultMap id="BaseResultMap" type="com.mass.entity.Finance">
+    <id column="Id" jdbcType="BIGINT" property="id"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+    <result column="activities_id" jdbcType="BIGINT" property="activitiesId"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="activities_name" jdbcType="VARCHAR" property="activitiesName"/>
+    <result column="times" jdbcType="TIMESTAMP" property="times"/>
+    <result column="total_free" jdbcType="INTEGER" property="totalFree"/>
+    <result column="type" jdbcType="VARCHAR" property="type"/>
+    <result column="mass_id" jdbcType="BIGINT" property="massId"/>
+    <result column="mass_name" jdbcType="VARCHAR" property="massName"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
+  </resultMap>
+  <resultMap id="DtoResultMap" type="com.mass.dto.result.FinanceDto">
+    <id column="Id" jdbcType="BIGINT" property="id"/>
+    <result column="activities_id" jdbcType="BIGINT" property="activitiesId"/>
+    <result column="activities_name" jdbcType="VARCHAR" property="activitiesName"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="times" jdbcType="TIMESTAMP" property="times"/>
+    <result column="total_free" jdbcType="INTEGER" property="totalFree"/>
+    <result column="type" jdbcType="VARCHAR" property="type"/>
+    <result column="mass_id" jdbcType="BIGINT" property="massId"/>
+    <result column="mass_name" jdbcType="VARCHAR" property="massName"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    Id, create_time, last_modify_time, activities_id, activities_name,name, times, total_free,
+    type, mass_id, mass_name, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from finance
+    where Id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAudit" resultMap="DtoResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from finance
+    where status=1
+  </select>
+  <select id="selectByQuery" resultMap="DtoResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from finance
+    where 1=1
+    <if test="name != null">
+      and name like concat(#{name},'%')
+    </if>
+    <if test="type != null">
+      and type=#{type}
+    </if>
+    <if test="startTimes != null ">
+      <if test="endTimes != null">
+        and times BETWEEN #{startTimes} and #{endTimes}
+      </if>
+      <if test="endTimes == null">
+        and times BETWEEN #{startTimes} and now()
+      </if>
+    </if>
+    <if test="massId != null">
+      and mass_id =#{massId}
+    </if>
+    <if test="status != null">
+      and status =#{status}
+    </if>  order by create_time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from finance
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.mass.entity.Finance" useGeneratedKeys="true" keyProperty="id">
+    insert into finance ( activities_id,
+      activities_name, name,times, total_free,
+      type, mass_id, mass_name,  status)
+    values ( #{activitiesId},
+      #{activitiesName},#{name}, #{times}, #{totalFree},
+      #{type}, #{massId}, #{massName},
+      #{status})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mass.entity.Finance">
+    update finance
+    set
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      activities_id = #{activitiesId,jdbcType=BIGINT},
+      activities_name = #{activitiesName,jdbcType=VARCHAR},
+      name=#{name},
+      times = #{times,jdbcType=TIMESTAMP},
+      total_free = #{totalFree,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      mass_id = #{massId,jdbcType=VARCHAR},
+      mass_name = #{massName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

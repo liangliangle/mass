@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mass.dao.SysResourceMapper">
+  <resultMap id="BaseDto" type="com.mass.dto.SysResource">
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="type" property="type"/>
+    <result column="url" property="url"/>
+    <result column="parent_id" property="parentId"/>
+    <result column="parent_ids" property="parentIds"/>
+    <result column="permission" property="permission"/>
+    <result column="available" property="available"/>
+    <result column="pc_icon" property="pcIcon"/>
+    <collection property="children" ofType="com.mass.dto.SysResource" select="findByParent"
+                column="{parentId=id}">
+    </collection>
+  </resultMap>
+
+  <select id="findByParent" resultMap="BaseDto">
+      select * from sys_resource where parent_id=#{parentId}
+  </select>
+  <select id="findByRole" resultType="com.mass.dto.SysResource">
+    select * from sys_resource where id in
+  (select resource_id from  sys_role_reource
+  where role_id=#{roleId}  and  status =1) order by id
+  </select>
+
+</mapper>

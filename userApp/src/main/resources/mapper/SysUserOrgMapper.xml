@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mass.dao.SysUserOrgMapper">
+  <resultMap id="BaseResultMap" type="com.mass.dto.SysUserOrg">
+    <constructor>
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+      <arg column="username" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="org_id" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="status" jdbcType="TINYINT" javaType="java.lang.Byte"/>
+      <arg column="position" jdbcType="TINYINT" javaType="java.lang.Byte"/>
+      <arg column="locked" jdbcType="TINYINT" javaType="java.lang.Byte"/>
+      <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+      <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+      <arg column="exit_time" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+      <arg column="exit_reason" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="grade_class" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="org_name" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="apply_reason" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </constructor>
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" suffix=")" prefixOverrides="and">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, username, org_id, status, position, locked, create_time, update_time, exit_time, 
+    exit_reason, grade_class, org_name
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.mass.dto.SysUserOrgExample">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List"/>
+    from sys_user_org
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List"/>
+    from sys_user_org
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_user_org
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.mass.dto.SysUserOrgExample">
+    delete from sys_user_org
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.mass.dto.SysUserOrg">
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_user_org (username, org_id, status,
+    position, locked, create_time,
+    update_time, exit_time, exit_reason,
+    grade_class, org_name,apply_reason)
+    values (#{username,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+    #{position,jdbcType=TINYINT}, #{locked,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
+    #{updateTime,jdbcType=TIMESTAMP}, #{exitTime,jdbcType=TIMESTAMP}, #{exitReason,jdbcType=VARCHAR},
+    #{gradeClass,jdbcType=VARCHAR}, #{orgName,jdbcType=VARCHAR}, #{applyReason,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.mass.dto.SysUserOrg">
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_user_org
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        username,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="position != null">
+        position,
+      </if>
+      <if test="locked != null">
+        locked,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="exitTime != null">
+        exit_time,
+      </if>
+      <if test="exitReason != null">
+        exit_reason,
+      </if>
+      <if test="gradeClass != null">
+        grade_class,
+      </if>
+      <if test="orgName != null">
+        org_name,
+      </if>
+      <if test="applyReason != null">
+        apply_reason,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=TINYINT},
+      </if>
+      <if test="locked != null">
+        #{locked,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="exitTime != null">
+        #{exitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="exitReason != null">
+        #{exitReason,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeClass != null">
+        #{gradeClass,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null">
+        #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyReason != null">
+        #{applyReason,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.mass.dto.SysUserOrgExample" resultType="java.lang.Integer">
+    select count(*) from sys_user_org
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update sys_user_org
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.username != null">
+        username = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orgId != null">
+        org_id = #{record.orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.position != null">
+        position = #{record.position,jdbcType=TINYINT},
+      </if>
+      <if test="record.locked != null">
+        locked = #{record.locked,jdbcType=TINYINT},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.exitTime != null">
+        exit_time = #{record.exitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.exitReason != null">
+        exit_reason = #{record.exitReason,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gradeClass != null">
+        grade_class = #{record.gradeClass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.orgName != null">
+        org_name = #{record.orgName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update sys_user_org
+    set id = #{record.id,jdbcType=INTEGER},
+    username = #{record.username,jdbcType=VARCHAR},
+    org_id = #{record.orgId,jdbcType=VARCHAR},
+    status = #{record.status,jdbcType=TINYINT},
+    position = #{record.position,jdbcType=TINYINT},
+    locked = #{record.locked,jdbcType=TINYINT},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+    exit_time = #{record.exitTime,jdbcType=TIMESTAMP},
+    exit_reason = #{record.exitReason,jdbcType=VARCHAR},
+    grade_class = #{record.gradeClass,jdbcType=VARCHAR},
+    org_name = #{record.orgName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause"/>
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mass.dto.SysUserOrg">
+    update sys_user_org
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=TINYINT},
+      </if>
+      <if test="locked != null">
+        locked = #{locked,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="exitTime != null">
+        exit_time = #{exitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="exitReason != null">
+        exit_reason = #{exitReason,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeClass != null">
+        grade_class = #{gradeClass,jdbcType=VARCHAR},
+      </if>
+      <if test="orgName != null">
+        org_name = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyReason != null">
+        apply_reason = #{applyReason,jdbcType=VARCHAR},
+      </if>
+      <if test="successTime != null">
+        success_time = #{successTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}  AND locked=0
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mass.dto.SysUserOrg">
+    update sys_user_org
+    set username = #{username,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      position = #{position,jdbcType=TINYINT},
+      locked = #{locked,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      exit_time = #{exitTime,jdbcType=TIMESTAMP},
+      exit_reason = #{exitReason,jdbcType=VARCHAR},
+      grade_class = #{gradeClass,jdbcType=VARCHAR},
+      org_name = #{orgName,jdbcType=VARCHAR},
+      apply_reason = #{applyReason,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectUserAndOrgList" resultType="com.mass.dto.SysUserOrg">
+    SELECT * FROM sys_user_org
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="x!=null and x!='' ">grade_class=#{x}</if>
+      <if test="y!=null and y!='' ">AND org_name=#{y}</if>
+      AND status=#{status}
+    </trim>
+    ORDER BY create_time DESC limit #{offset},#{limit}
+  </select>
+  <select id="selectUserAndOrgListCount" resultType="int">
+    SELECT count(*) FROM sys_user_org
+    <trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="x!=null and x!='' ">grade_class=#{x}</if>
+      <if test="y!=null and y!='' ">AND org_name=#{y}</if>
+      AND status=#{status}
+    </trim>
+    ORDER BY create_time DESC limit #{offset},#{limit}
+  </select>
+  <select id="selectByUserName" resultType="com.mass.dto.SysUserOrg">
+  SELECT  * FROM  sys_user_org  WHERE  username=#{username} AND status=1
+  </select>
+  <update id="deleteOrgUser">
+      UPDATE  sys_user_org SET status=-2
+      WHERE   username=#{username}   AND   org_id=#{orgId}
+    </update>
+  <select id="getcheckUserByID" resultType="com.mass.dto.ApplyOrgTemp">
+          SELECT  * FROM  apply_org_temp where id=#{id} AND status =0;
+  </select>
+  <select id="getUserOrgByID" resultType="com.mass.dto.SysUserOrg">
+      select * from  sys_user_org where id=#{id}  AND status =-1
+  </select>
+  <select id="getcountbyUsernameAndOrgId" resultType="int">
+            SELECT  COUNT(*) FROM sys_user_org WHERE username=#{username} AND  org_id=#{orgId} AND status=-1
+  </select>
+  <select id="getcountbyUsernameAndOrgIdstatus" resultType="int">
+    SELECT  COUNT(*) FROM sys_user_org WHERE  username=#{username} AND  org_id=#{orgId} AND status=1
+  </select>
+  <select id="getCheckList" resultType="com.mass.dto.login.UserOrgQueryDto">
+       SELECT  * FROM  sys_user_org t1 left JOIN sys_user t2 ON t1.username=t2.username where t1.status=-1  AND t1.org_id=#{orgId} ORDER  BY  t1.create_time DESC
+  </select>
+  <select id="getCheckListCount" resultType="java.lang.Integer">
+        select count(*) FROM  sys_user_org  where status=-1 AND org_id=#{orgId}
+  </select>
+  <select id="getUserOrgByOrgID" resultType="com.mass.dto.login.UserOrgQueryDto">
+       SELECT   * FROM   sys_user_org t1 left JOIN sys_user t2 ON t1.username=t2.username   WHERE  t1.org_id=#{orgId}  AND  t1.status=1  ORDER  BY  t1.create_time DESC  limit #{offset},#{limit}
+  </select>
+  <select id="getCountByOrgId" resultType="java.lang.Integer">
+         SELECT  COUNT(*) FROM sys_user_org t1 where  t1.org_id=#{orgId}   AND   t1.status=1
+  </select>
+  <select id="getUserOrgByUsername" resultType="com.mass.dto.SysUserOrg">
+              SELECT  * FROM  sys_user_org     WHERE  username = #{username} AND status=1
+  </select>
+  <select id="getqueryBYusername" resultType="com.mass.dto.login.UserOrgQueryDto">
+              SELECT  * FROM  sys_user_org     WHERE  status=1 AND  username = #{username} AND  org_id=#{organizationId}
+  </select>
+  <select id="getAllByOrgName" resultType="com.mass.dto.login.UserOrgQueryDto">
+    SELECT * FROM sys_user_org t1  LEFT JOIN sys_user t2 ON t1.username=t2.username  WHERE t1.status=1 <if test="orgId!=null ">AND t1.org_id=#{orgId}
+  </if> ORDER by t1.create_time
+  </select>
+  <select id="getAllByOrgNameCount" resultType="java.lang.Integer">
+    SELECT count(*) FROM sys_user_org WHERE   status=1
+    <if test="orgName!=null and orgName!='' ">AND org_name LIKE
+    CONCAT(CONCAT('%',#{orgName}),'%')
+  </if> ORDER by create_time limit #{offset},#{limit}
+  </select>
+  <select id="getRoleByUsername" resultType="com.mass.dto.UserRole">
+          SELECT  * FROM user_role WHERE   status=1 AND user_name=#{username}
+  </select>
+  <select id="getUsersBymassNames" resultType="String">
+    SELECT DISTINCT username FROM sys_user_org WHERE  status=1 AND org_name IN
+    <foreach item="item" index="index" collection="orgNames" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+
+  </select>
+  <select id="getUserSByusernames" resultType="com.mass.dto.SysUser">
+    SELECT * FROM sys_user where  username IN
+    <foreach item="item" index="index" collection="usernames" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+
+  </select>
+    <update id="deleteByOrgID">
+             UPDATE   sys_user_org SET   status=-2   WHERE org_id=#{id}
+    </update>
+  <select id="getUsersByOrgName" resultType="com.mass.dto.login.UserOrgQueryDto">
+
+             SELECT * FROM sys_user_org t1 left JOIN sys_user t2 ON t1.username=t2.username where status=1 AND AND  status=1
+    <if test="orgName!=null  ">AND  t1.org_name LIKE
+      CONCAT(#{orgName},'%')    </if>
+   ORDER by t1.create_time limit #{offset},#{limit}
+  </select>
+  <select id="getUsersByOrgNamecounts" resultType="Integer">
+    SELECT COUNT(*) FROM sys_user_org  where  status=1
+    <if test="orgName!=null  ">AND  org_name LIKE
+      CONCAT(#{orgName},'%')    </if>
+
+  </select>
+  <select id="getcountbyUsernameAndOrgIdstatus2" resultType="int">
+ SELECT  COUNT(*) FROM sys_user_org WHERE  username=#{username} AND  org_id=#{orgId} AND status=-1
+  </select>
+  <select id="getuserByUsername" resultType="com.mass.dto.SysUser">
+            SELECT  * FROM  sys_user WHERE   username=#{username}
+  </select>
+  <select id="getmyapplyOrgUser" resultType="com.mass.dto.login.UserOrgDto">
+               SELECT  * FROM  sys_user_org t1 LEFT  JOIN sys_organization t2  ON t1.org_id=t2.id WHERE   t1.username=#{username}
+    <if test="status!=null">   AND  t1.status=#{status}
+    </if>
+    ORDER  BY t1.create_time
+  </select>
+  <update id="deleteMassUser" >
+              UPDATE   sys_user_org SET   status=-2 , exit_time=now() ,exit_reason='' WHERE username=#{username} AND  org_id=#{orgId}
+  </update>
+</mapper>

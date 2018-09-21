@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mass.dao.NoticeUsersMapper">
+    <resultMap id="BaseResultMap" type="com.mass.entity.NoticeUsers">
+        <id column="Id" jdbcType="BIGINT" property="id"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_modify_time" jdbcType="TIMESTAMP" property="lastModifyTime"/>
+        <result column="sno" jdbcType="VARCHAR" property="sno"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="read_time" jdbcType="TIMESTAMP" property="readTime"/>
+        <result column="read_status" jdbcType="INTEGER" property="readStatus"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="notice_id" property="noticeId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    Id, create_time, last_modify_time, sno, username,start_time, end_time, read_time, read_status, notice_id,
+    status
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mass_db.notice_users
+        where Id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from mass_db.notice_users
+    where Id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.mass.entity.NoticeUsers">
+    insert ignore into mass_db.notice_users (create_time, last_modify_time, sno, username,
+      start_time, end_time, read_time, 
+      read_status, status,notice_id)
+    values (#{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, #{sno,jdbcType=VARCHAR}, 
+     #{username},
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{readTime,jdbcType=TIMESTAMP},
+      #{readStatus,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},#{noticeId})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.mass.entity.NoticeUsers">
+    update mass_db.notice_users
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      sno = #{sno,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      read_time = #{readTime,jdbcType=TIMESTAMP},
+      read_status = #{readStatus,jdbcType=INTEGER},
+      notice_id=#{noticeId}
+      status = #{status,jdbcType=INTEGER}
+    where Id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+    <update id="readNotice">
+     update mass_db.notice_users
+    set
+      last_modify_time = now(),
+      read_time = now(),
+      read_status = 1,
+      status = 2
+    where  notice_id=#{noticeId} and sno=#{sno}
+  </update>
+
+    <select id="selectByNotice" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from mass_db.notice_users
+        where notice_id=#{noticeId}
+        <if test="sno != null">
+            and sno name like concat(#{sno},'%')
+        </if>
+        <if test="status != null">
+            and read_status =#{status}
+        </if>  order by create_time desc
+    </select>
+
+    <select id="countByNoticeId" resultType="java.lang.Long">
+        select
+        count(*)
+        from mass_db.notice_users
+        where notice_id=#{noticeId}
+        <if test="status != null">
+            and read_status =#{status}
+        </if>
+    </select>
+</mapper>
